@@ -1,0 +1,42 @@
+@CHARSET "UTF-8";
+/* 각 화면은 div id로 구분한다 */
+/* 각 화면의 요소들은 div.box로 감싸서 마진과 패딩을 준다 */
+html {
+	height: 100%;
+}
+
+body {
+	background-color: #F7F7F7;
+	height: 100%;
+	padding: 0 0 5px 0;
+	font-size: small;
+}
+
+a {
+	cursor: pointer;
+}
+
+/* 사용자 정의 tag */
+name {
+	font-size: 1.3em;
+	color: #2563FF;
+	background-color: #C7D7FF;
+}
+
+/* 정렬 */
+.center {
+	text-align: center;
+}
+
+.left {
+	text-align: left;
+}
+
+.right {
+	text-align: right;
+}
+
+/* display */
+.hide {
+	display: none;
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="/stylesheets/bootstrap.css">
+<link rel="stylesheet" href="/stylesheets/bootstrap-theme.css">
+<link rel="stylesheet" href="/stylesheets/bootstrap-docs.css">
+<link rel="stylesheet" href="/stylesheets/bootstrap-glyphicons.css">
+
+<link rel="stylesheet" href="/stylesheets/jquery-ui.css">
+<link rel="stylesheet" href="/stylesheets/jquery-ui.structure.css">
+<link rel="stylesheet" href="/stylesheets/jquery-ui.theme.css">
+
+<link rel="stylesheet" href="/stylesheets/jquery.dataTables.css">
+<link rel="stylesheet" href="/stylesheets/style.css">
+<link rel="stylesheet" href="/stylesheets/base.css">
+<script src="/js/jquery-2.1.3.min.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/jquery.dataTables.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<script type="text/javascript" src="/js/user/join.js?V=8"></script>
+
+<title>회원가입</title>
+</head>
+<body>
+
+<!-- container -->
+  <div class="container">
+		<!-- body -->
+        <div class="body">
+          <!-- form -->
+          <form  id="joinForm" name="joinForm" method="post" action="/main/reg">
+			 <div id="userJoinForm" class="col-md-offset-3 col-md-6 col-md-offset-3">
+				
+				<div id="joinInfo">
+				
+					<div class="box">
+		              <h1 >회원 가입</h1>
+		            </div>
+		            
+		            <div class="box">
+		            <div class="input-group">
+		            	<span class="input-group-addon"> User id </span>
+		                <input type="text" class="form-control" id="userid" name="userid" placeholder="userid" pattern="[a-zA-Z0-9]*" required  
+		                	   title="문자 및 숫자만 가능합니다.">
+		              </div>
+		            </div>
+		            
+		             <div class="box">
+		              <div class="input-group">
+		                <span class="input-group-addon">Password</span>
+		                <input type="password" class="form-control" id="password" name="password" placeholder="password" pattern="(?=.*\d)(?=.*[a-zA-Z]).{6,}" required
+		                	   title="패스워드는 6 자 이상, 적어도 하나의 문자 및 숫자를 포함해야 합니다. ">
+		              </div>
+		            </div>
+		            
+		             <div class="box">
+		              <div class="input-group">
+		                <span class="input-group-addon">Nickname</span>
+		                <input type="text" class="form-control" id="nickname" name="nickname" placeholder="nickname" required>
+		              </div>
+		            </div>
+	            	<div id="joinButton">
+		            	<input class="btn btn-primary btn-lg btn-block" id="join" type="submit" value="join">
+		            </div>
+	            </div>
+	            <a href="/main/login" class="btn btn-lg btn-link btn-block" id="login">로그인 창으로</a>
+	        </div>
+          </form>
+        </div>
+      </div>
+  
+</body>
+</html>

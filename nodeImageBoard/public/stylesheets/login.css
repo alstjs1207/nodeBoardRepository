@@ -1,0 +1,71 @@
+@CHARSET "UTF-8";
+
+.border {
+	border-top: 1px solid;
+	border-color: #E5E5E5;
+}
+
+/* ************** */
+html, body {
+	height: 100%;
+	width: 100%;
+}
+
+div.container {
+	height: 100%;
+	width: 100%;
+}
+
+div.top {
+	text-align: center;
+	height: 0;
+	overflow: hidden;
+}
+
+/* h1들은 기본적으로 마진을 가지고, div 위에 뜬다. 공간 차지 안하려면 모든 요소에 maring 0적용 후, 각각 따로 지정해야함*/
+h1, h2, h3, h4, h5, h6 {
+	margin: 0px;
+}
+
+div.body { /* x 스크롤 */
+	height: 100%;
+	padding: auto;
+	text-align: center;
+}
+
+#loginForm {
+	text-align: center;
+	display: inline-block;
+}
+
+#loginInfo, #loginButton {
+	width: 100%;
+	display: block;
+	margin: 5px 0 5px 0;
+}
+
+#loginInfo { /* y 스크롤 보려면 내용물이 있는 곳에overflow: scroll; */
+	border-radius: 8px;
+	border: 6px solid;
+	border-color: #E5E5E5;
+	text-align: center;
+	margin: 80px 0 0 0;
+	padding: 20px 50px 20px 50px;
+}
+
+#loginInfo .box {
+	margin: 20px 0 20px 0;
+	text-align: center;
+}
+
+#alert {
+	text-align: center;
+}
+
+#loginButton {
+	
+}
+
+#joinButton {
+
+}

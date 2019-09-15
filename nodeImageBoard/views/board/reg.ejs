@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel='stylesheet' href='/stylesheets/board.css'/>
+<link rel='stylesheet' href='/stylesheets/bootstrap.min.css'>
+<script src="/js/jquery-2.1.3.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="/js/board/board.js"></script>
+
+<title><%= title %></title>
+</head>
+<body>
+<%-JSON.stringify(session)%>
+<header>
+	<% include ../layout/header.ejs %>
+</header>
+<!-- container -->
+  <div class="container">
+		<!-- body -->
+        <div class="body">
+          <!-- form -->
+          <form action="/board/reg" id ="regForm" name ="regForm" method="post" enctype="multipart/form-data">
+			 <div id = "imageH">
+			 </div>
+			 <!-- <input type="hidden" id="fileimage_rep" name="fileimage_rep" value=""> -->
+			 <div id="boardRegForm">
+		            <table class="table table-striped">
+						<thead>
+							<tr>
+								<th colspan="2" style="text-align: center;"> 글쓰기 게시판 </th>
+							</tr>  
+					 	</thead>
+					 
+					 	<tbody>
+					    	<tr>
+					    		<th> 제목 </th>
+					  			<td>
+					  				<input type="text" class="form-control" placeholder="제목을 입력하세요." name="title" maxlength="50">
+					  			</td>
+					  		</tr>
+							<tr>
+								<th> 작성자 </th>
+					  			<td>
+					  				<input type="text" class="form-control" name="userid" maxlength="50" value="<%= session.sid %>" readonly="readonly">
+					  			</td>
+					  		</tr>
+					
+							<tr>
+								<th> 이미지 </th>
+								<td>
+									<input multiple="multiple" type="file" class="form-control" id ="filename" name="filename" accept="image/jpeg, image/png, image/gif">
+								</td>
+					
+							</tr>
+							<tr>
+								<th> 이미지 미리보기 </th>
+								<td>
+									<div class="img_wrap" id="img_wrap">
+										<!-- <img id="fileimage_1" src="<spring:url value='/image/sky.jpg'/>" onclick="repimage(1)"> -->
+									</div>
+								</td>
+					
+							</tr>
+					  		<tr>
+					  			<th> 내용 </th>
+					  			<td>
+					  				<textarea class="form-control" placeholder="내용을 입력하세요." name="contents" maxlength="2048" style="height:350px"></textarea>
+					  			</td>
+					  		</tr>
+					 	</tbody>
+					 </table>
+		           
+	            	<div>
+	            		<a href="/board/list/1" class="btn btn-sm btn-outline-secondary" id="list">목록</a>
+		            	<input class="btn btn-sm btn-outline-primary" id="confirm" type="submit" value="확인">
+		            </div>
+	        </div>
+          </form>
+        </div>
+      </div>
+    <footer>
+    	<% include ../layout/footer.ejs %>
+    </footer>
+</body>
+
+</html>

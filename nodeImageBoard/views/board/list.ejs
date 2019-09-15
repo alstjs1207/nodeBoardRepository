@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+<link rel="stylesheet" href="/stylesheets/board.css">
+<script src="/js/jquery-2.1.3.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+<title>이미지 게시판</title>
+</head>
+<body>
+<header>
+	<% include ../layout/header.ejs %>
+</header>
+    <main role="main">
+      <div class="album py-5 bg-light">
+        <!-- container -->
+        <div class="container">
+          <form name="boardListForm" action="/board/view" method="post">
+            <input type="hidden" id="totalPage" name="totalPage" value="<%= totalPage %>">
+          	<div class="row">
+          		<% boardList.forEach(function (board,index){ %>
+          		 		 <div class="col-md-4">
+			              <div class="card mb-4 box-shadow">
+			              <% repImageList.forEach(function (repimage,index){ 
+			              		if(board.boardcd == repimage.boardcd) {%>
+			              			<img class="img-thumbnail" src="<%= repimage.vfiledir %>">
+			              			<%} }) %>
+			                <div class="card-body">
+			                <h5 class="card-title"><%= board.title %></h5>
+			                  <p class="card-text"><%= board.contents %></p>
+			                 <h6 class="card-subtitle mb-2 text-muted"><%= board.userid %></h6>
+			                  <div class="d-flex justify-content-between align-items-center">
+			                    <div class="btn-group">
+			                       <a class="btn btn-sm btn-outline-secondary" id="view" href="/board/view/<%= board.seq %>/<%= board.userid %>">view</a>
+			                    </div>
+			                    <small class="text-muted"><%= board.moddate %></small>
+			                  </div>
+			                </div>
+			              </div>
+			            </div>
+			            <%}) %>
+          	</div>
+          	<nav aria-label="Page navigation example">
+			  <ul class="pagination justify-content-center" id="pageForm">
+			  <% var startPage =  pagform.startPage;
+			     var endPage = pagform.endPage;
+			     var totalPage = pagform.totalPage;
+			     var total = parseInt(totalPage/6);
+				 var chk = totalPage%6;
+				 
+				 if(chk > 0){
+				 	total = total + 1;
+				 	}
+			  %>
+					<li class="page-item"><a class="page-link" href="/board/list/1" >Previous</a></li>
+					
+					<% for(var i=1; i <= total;i++) { %>
+						<li class="page-item"><a class="page-link" href="/board/list/<%=i %>"><%=i %></a><li>
+					<% } %>
+					<li class="page-item"><a class="page-link" href="/board/list/<%=total %>" >Next</a></li>
+			  </ul>
+			</nav>
+          </form>
+			<div class="btn-group">
+				<a href="/board/reg" class="btn btn-sm btn-outline-secondary" id="reg">글쓰기</a>
+			</div>
+        </div>
+      </div>
+
+    </main>
+    <footer>
+    	<% include ../layout/footer.ejs %>
+    </footer>
+  </body>
+
+
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="/stylesheets/bootstrap.css">
+<link rel="stylesheet" href="/stylesheets/bootstrap-theme.css">
+<link rel="stylesheet" href="/stylesheets/bootstrap-docs.css">
+<link rel="stylesheet" href="/stylesheets/bootstrap-glyphicons.css">
+
+<link rel="stylesheet" href="/stylesheets/jquery-ui.css">
+<link rel="stylesheet" href="/stylesheets/jquery-ui.structure.css">
+<link rel="stylesheet" href="/stylesheets/jquery-ui.theme.css">
+
+<link rel="stylesheet" href="/stylesheets/jquery.dataTables.css">
+<link rel="stylesheet" href="/stylesheets/style.css">
+<link rel="stylesheet" href="/stylesheets/login.css">
+<script src="/js/jquery-2.1.3.min.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/jquery.dataTables.js"></script>
+<script src="/js/jquery-ui.js"></script>
+<!-- <script type="text/javascript" src="/js/user/user.js?V=6"></script> -->
+<title>로그인</title>
+</head>
+<body>
+<%-JSON.stringify(session)%>
+<!-- container -->
+  <div class="container">
+    <!-- body -->
+    <div class="body">
+      <!-- form -->
+      <form action="/main/login" method="post">
+		<input type="hidden" id="cmd" name="cmd" value="sso">
+        <div id="loginForm" class="col-md-offset-3 col-md-6 col-md-offset-3">
+          <div id="loginInfo">
+          
+          <div class="box">
+              <h1 >Please sign in</h1>
+            </div>
+
+            <div class="box">
+              <div class="input-group">
+                <span class="input-group-addon" id="sizing-addon2">User ID</span> <input type="text" class="form-control" name="userid" placeholder="Id.."
+                  aria-describedby="sizing-addon2">
+              </div>
+            </div>
+            <div class="border"></div>
+            <div class="box">
+              <div class="input-group">
+                <span class="input-group-addon" id="sizing-addon2">Password</span> <input type="password" class="form-control" name="password"
+                  placeholder="Password.." aria-describedby="sizing-addon2">
+              </div>
+            </div>
+			 <div id="loginButton">
+            	<input class="btn btn-lg btn-warning btn-block" id="login" type="submit" value="login">
+          	</div>
+          </div>
+          <a href="/main/join" class="btn btn-lg btn-link btn-block" id="join">회원가입</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
