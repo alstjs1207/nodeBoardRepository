@@ -8,6 +8,7 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var multer = require('multer');
 var moment = require('moment');
+var async = require('async');
 
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');

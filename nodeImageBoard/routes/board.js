@@ -16,6 +16,8 @@ var upload = multer({
 		}
 	})});
 
+var async = require('async');
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
 	res.redirect('/board/list/'+1);
@@ -75,7 +77,7 @@ router.get('/list/:cur', function(req, res, next) {
 			  		res.render('board/list',{boardList:boardList, repImageList:repImageList, pagform:pagform,session:req.session});
 		  		});
 		  	});
-			
+			//getConnection().release();
 		});
 	}
 	else {
@@ -148,30 +150,38 @@ router.get('/view/:seq/:id', function(req, res, next) {
 	console.log("board list:  "+req.session.sid);
 	var seq = req.params.seq;
 	var id = req.params.id;
-	console.log("seq : "+seq +",id :"+id);
 	var query = "SELECT seq, boardcd, title, contents, userid, regdate, moddate FROM BOARD WHERE seq = ? AND userid = ?";
 	
 	var imageQuery="SELECT seq,	boardcd, filename,	filedir, vfiledir, regdate,	moddate FROM IMAGE WHERE boardcd = ?";
 	
-	getConnection().query(query,[seq,id], function(err, boardView, fields){
-  		if(err) {
-  			console.log("error :"+err);
-  			return;
-  		}
-  		
-  		var boardcd = boardView[0].boardcd;
-  		
-  		getConnection().query(imageQuery,[boardcd], function(err, getImageViewList, fields){
-  			if(err) {
-  	  			console.log("error :"+err);
-  	  			return;
-  	  		}
-  			
-  			res.render('board/view',{boardView:boardView[0], getImageViewList:getImageViewList,session:req.session});
-  			
-  		});
-		});
-	});
+	//waterfall 비동기 방식
+	async.waterfall([
+		function(callback){
+			console.log("seq : "+seq +",id :"+id);
+			getConnection().query(query,[seq,id], function(err, boardView, fields){
+		  		if(err) {
+		  			console.log("error :"+err);
+		  			return;
+		  		}
+		  		callback(null,boardView[0]);
+			});
+		},
+		function(boardView,callback){
+			getConnection().query(imageQuery,[boardView.boardcd], function(err, getImageViewList, fields){
+	  			if(err) {
+	  	  			console.log("error :"+err);
+	  	  			return;
+	  	  		}
+	  			callback(null,boardView,getImageViewList);
+	  		});
+		},
+		function(boardView,getImageViewList,callback){
+			callback(null);
+			res.render('board/view',{boardView:boardView, getImageViewList:getImageViewList,session:req.session});
+		}
+	]);
+	
+});
 
 
 //수정 화면
@@ -321,6 +331,52 @@ router.post('/modview',upload.array('filenameModify'), function(req, res, next) 
 });
 
 
+//이미지 삭제
+router.post('/del', function(req, res, next) {
+
+	var boardcd = req.body.boardcd;
+	var userid = req.body.userid;
+	
+	console.log("board del :  "+req.session.sid);
+	console.log("board del :  "+boardcd + ", "+ userid);
+	
+	var query = "DELETE FROM BOARD WHERE boardcd = ?";
+	var imageQuery="DELETE FROM IMAGE WHERE boardcd = ?";
+	
+	var Sid = req.session.sid;
+	console.log("board del :  "+Sid);
+	//session 확인
+	if(Sid) {
+		if(Sid == userid){
+			console.log("board del logic");
+			//게시글 삭제
+			getConnection().query(query,[boardcd], function(err, view, fields){
+		  			if(err) {
+		  	  			console.log("error :"+err);
+		  	  			return;
+		  	  		}
+		  			//게시글 관련 이미지 삭제
+		  			getConnection().query(imageQuery,[boardcd], function(err, imageview, fields){
+		  				if(err) {
+			  	  			console.log("error :"+err);
+			  	  			return;
+			  	  		}
+		  				
+		  				res.send({result:"SUC"});
+		  			});
+		  			
+				});
+		}
+		else {
+			res.send({result:"DEFSID"});
+		}
+	}
+	else {
+		res.send({result:"NOSID"});
+	}
+});
+
+
 var pool = mysql.createPool({
 	connectionLimit: 10,
 	host:"192.168.0.98",
@@ -332,7 +388,7 @@ var pool = mysql.createPool({
 
 function getConnection(){
 	return pool;
-};
+}
 
 module.exports = router;
 
