@@ -63,10 +63,11 @@ router.post('/login', function(req, res, next) {
 });
 
 //로그아웃
-router.post('/logout', function(req, res, next) {
+router.get('/logout', function(req, res, next) {
 	console.log("logout");
 	req.session.destroy();
-	res.redirect('/main/login');
+//	res.redirect('/main/login');
+	res.redirect('/board/list/1');
 	
 });
 

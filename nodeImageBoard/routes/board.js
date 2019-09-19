@@ -30,7 +30,7 @@ router.get('/list/:cur', function(req, res, next) {
 	var startPage = 0;
 	var endPage = 6;
 	var totalPage = 0;
-	if(req.session.sid) {
+	//if(req.session.sid) {
 		var countQuery = "SELECT count(*) as cnt FROM BOARD";
 		
 		getConnection().query(countQuery, function(err, count){
@@ -79,10 +79,10 @@ router.get('/list/:cur', function(req, res, next) {
 		  	});
 			//getConnection().release();
 		});
-	}
-	else {
-		res.redirect('/main/login');
-	}
+//	}
+//	else {
+//		res.redirect('/main/login');
+//	}
 });
 //등록 첫 화면
 router.get('/reg', function(req, res, next) {
@@ -147,7 +147,7 @@ router.post('/reg',upload.array('filename'), function(req, res, next) {
 
 router.get('/view/:seq/:id', function(req, res, next) {
 	console.log("board view!!");
-	console.log("board list:  "+req.session.sid);
+	console.log("board view:  "+req.session.sid);
 	var seq = req.params.seq;
 	var id = req.params.id;
 	var query = "SELECT seq, boardcd, title, contents, userid, regdate, moddate FROM BOARD WHERE seq = ? AND userid = ?";
@@ -163,6 +163,7 @@ router.get('/view/:seq/:id', function(req, res, next) {
 		  			console.log("error :"+err);
 		  			return;
 		  		}
+		  		
 		  		callback(null,boardView[0]);
 			});
 		},

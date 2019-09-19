@@ -1,7 +1,7 @@
  <header>
-   <div class="collapse bg-dark" id="navbarHeader">
+  <!-- <div class="collapse bg-dark" id="navbarHeader">
    </div>
-   <div class="navbar navbar-dark bg-dark box-shadow">
+    <div class="navbar navbar-dark bg-dark box-shadow">
      <div class="container d-flex justify-content-between">
        <a href="/board/list/1" class="navbar-brand d-flex align-items-center">
          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
@@ -14,5 +14,20 @@
         </div>
        </form>
      </div>
+   </div> -->
+   <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+   	<h3 class="my-0 mr-md-auto font-weight-normal">Album Board</h3>
+   		<nav class="my-2 my-md-0 mr-md-3">
+		    <a class="p-2 text-dark" href="#">Features</a>
+		    <a class="p-2 text-dark" href="#">Enterprise</a>
+		    <a class="p-2 text-dark" href="#">Support</a>
+		    <a class="p-2 text-dark" href="#">Pricing</a>
+		    <!-- <h5 class="my-0 mr-md-auto font-weight-normal">Signed in as <%-JSON.stringify(session.sid)%></h5> -->
+		</nav>
+		<%if(session.sid) {%>
+			<a class="btn btn-outline-primary" href="/main/logout">Sign out</a>
+		<%} else {%>
+			<a class="btn btn-outline-primary" href="/main/login">Sign in</a>
+		<%}%>
    </div>
  </header>
