@@ -26,7 +26,7 @@
           		 <input type="hidden" id="seq" name ="seq" value="<%= boardView.seq%>">
           		 <input type="hidden" id="boardcd" name ="boardcd" value="<%= boardView.boardcd%>">
 			 <div id="boardModForm">
-		            <table class="table table-striped">
+		            <table class="table table-borderless">
 						<thead>
 							<tr>
 								<th colspan="2" style="text-align: center;"> 게시글 수정 </th>
@@ -37,19 +37,22 @@
 					    	<tr>
 					    		<th> 제목 </th>
 					  			<td>
-					  				<input type="text" class="form-control" id="title" name="title" readonly="readonly"  value="<%= boardView.title%>">
+					  				<input type="text" readonly class="form-control-plaintext" id="title" name="title" value="<%= boardView.title%>">
 					  			</td>
 					  		</tr>
 							<tr>
 								<th> 작성자 </th>
 					  			<td>
-					  				<input type="text" class="form-control" id="userid" name="userid" readonly="readonly" value="<%= boardView.userid%>">
+					  				<input type="text" readonly class="form-control-plaintext" id="userid" name="userid" value="<%= boardView.userid%>">
 					  			</td>
 					  		</tr>
 					  		<tr>
 								<th> 이미지 업로드 </th>
 								<td>
-									<input multiple="multiple" type="file" class="form-control" id ="filenameModify" name="filenameModify" accept="image/jpeg, image/png, image/gif">
+									<div class="custom-file">
+										<input multiple="multiple" type="file" class="custom-file-input" id ="filenameModify" name="filenameModify" aria-describedby="filenameModify" accept="image/jpeg, image/png, image/gif">
+										<label class="custom-file-label" for="filenameModify">Choose file</label>
+									 </div>
 								</td>
 					
 							</tr>
@@ -72,7 +75,7 @@
 					  		<tr>
 					  			<th> 내용 </th>
 					  			<td>
-					  				<textarea class="form-control" name="contents" maxlength="2048" style="height:350px"><%=boardView.contents%></textarea>
+					  				<textarea class="form-control" name="contents" style="height:350px"><%=boardView.contents%></textarea>
 					  			</td>
 					  		</tr>
 					 	</tbody>

@@ -50,7 +50,10 @@
 							<tr>
 								<th> 이미지 </th>
 								<td>
-									<input multiple="multiple" type="file" class="form-control" id ="filename" name="filename" accept="image/jpeg, image/png, image/gif">
+									<div class="custom-file">
+										<input multiple="multiple" type="file" class="custom-file-input" id ="filename" name="filename" aria-describedby="filename" accept="image/jpeg, image/png, image/gif">
+										<label class="custom-file-label" for="filename">Choose file</label>
+									</div>
 								</td>
 					
 							</tr>

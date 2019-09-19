@@ -41,7 +41,7 @@ footer p {
 
 table {
 	text-align:center; 
-	border:1px solid #dddddd;
+	/* border:1px solid #dddddd; */
 }
 
 #img_wrap {
@@ -60,3 +60,14 @@ table {
 	max-width: 100%;
 }
 .box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+
+#cardText {
+	height: 100px;
+	overflow: hidden; 
+	text-overflow: ellipsis;
+}
+
+#boardModForm {
+	margin : auto;
+	max-width: 75%;
+}
