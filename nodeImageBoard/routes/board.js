@@ -17,6 +17,7 @@ var upload = multer({
 	})});
 
 var async = require('async');
+var config = require('../config/secrets');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -26,7 +27,8 @@ router.get('/', function(req, res, next) {
 // 게시판 목록
 router.get('/list/:cur', function(req, res, next) {
 	console.log("board list!!");
-	console.log("board list:  "+req.session.sid);
+	console.log("session sid :  "+req.session.sid);
+	
 	var startPage = 0;
 	var endPage = 6;
 	var totalPage = 0;
@@ -77,7 +79,6 @@ router.get('/list/:cur', function(req, res, next) {
 			  		res.render('board/list',{boardList:boardList, repImageList:repImageList, pagform:pagform,session:req.session});
 		  		});
 		  	});
-			//getConnection().release();
 		});
 //	}
 //	else {
@@ -380,10 +381,10 @@ router.post('/del', function(req, res, next) {
 
 var pool = mysql.createPool({
 	connectionLimit: 10,
-	host:"192.168.0.98",
-  	user: "root",
-  	password: "root",
-  	database: "BOARD",
+	host:config.mysql_db.local.host,
+	user: config.mysql_db.local.user,
+	password: config.mysql_db.local.password,
+	database: config.mysql_db.local.database,
   	dateStrings: 'date' //db의 datetime을 정리된 데이터로 추출
 });
 

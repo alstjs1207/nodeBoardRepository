@@ -9,6 +9,7 @@ var flash = require('connect-flash');
 var multer = require('multer');
 var moment = require('moment');
 var async = require('async');
+var passport = require('passport');
 
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
@@ -35,6 +36,8 @@ app.use(session({
 	saveUninitialized: true
 }));
 app.use(flash());
+app.use(passport.initialize()); //순서 중요!!
+app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
