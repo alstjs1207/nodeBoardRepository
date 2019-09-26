@@ -1,6 +1,6 @@
 
 
-## nodeImageBoard
+# nodeImageBoard
 
 node.js 를 이용한 이미지 게시판 만들기
 
@@ -16,7 +16,7 @@ node.js 를 이용한 이미지 게시판 만들기
 
 홈페이지 리뉴얼 완료
 
-# 소셜 로그인(naver) 완료
+## 소셜 로그인(naver) 완료
 1. 수정 소스
 - app.js
 - login.js
@@ -33,7 +33,7 @@ node.js 를 이용한 이미지 게시판 만들기
 3. naver Developers 에서 '네아로' api 등록
 
 
-# config 파일 작성 완료
+## config 파일 작성 완료
 1. 수정소스
 - config/secrets.js // 중요정보이기 때문에 git에 올리지 않았습니다.
 - cinfig/config_info.js
@@ -43,7 +43,7 @@ node.js 를 이용한 이미지 게시판 만들기
 
 
 
-## Usage
+# Usage
 
 <local>
 해당 디렉토리로 이동
@@ -61,9 +61,9 @@ start 후 http://localhost:3000 실행
 로그인을 해야 본인의 게시글을 수정, 삭제 할 수 있습니다.
 
 
-## Developing
+# Developing
 
-# node.js
+## node.js
 - moment
 - multer
 - async
