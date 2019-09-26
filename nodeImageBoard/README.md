@@ -16,9 +16,32 @@ node.js 를 이용한 이미지 게시판 만들기
 
 홈페이지 리뉴얼 완료
 
-소셜 로그인(naver) 완료
+# 소셜 로그인(naver) 완료
+1. 수정 소스
+- app.js
+- login.js
+- list.ejs
+- login.ejs
+- config 파일
 
-config 파일 작성 완료
+2. npm 설치
+- npm install possport
+- npm install passport-naver --save
+
+사이트 참조 : http://www.passportjs.org
+
+3. naver Developers 에서 '네아로' api 등록
+
+
+# config 파일 작성 완료
+1. 수정소스
+- config/secrets.js // 중요정보이기 때문에 git에 올리지 않았습니다.
+- cinfig/config_info.js
+- login.js
+- board.js
+
+
+
 
 ## Usage
 
