@@ -1,6 +1,6 @@
 
 
-# nodeImageBoard
+## nodeImageBoard
 
 node.js 를 이용한 이미지 게시판 만들기
 
@@ -13,6 +13,8 @@ node.js 를 이용한 이미지 게시판 만들기
 로그인 / 로그아웃 완료
 
 회원가입 완료
+
+홈페이지 리뉴얼 완료
 
 소셜 로그인(naver) 완료
 
@@ -30,10 +32,22 @@ default port : 3000
 
 start 후 http://localhost:3000 실행
 
+첫 화면은 LIST 입니다.
+로그인 없이 모든 게시글을 볼 수 있습니다.
+
+로그인을 해야 본인의 게시글을 수정, 삭제 할 수 있습니다.
+
 
 ## Developing
 
-node.js
+# node.js
+- moment
+- multer
+- async
+- crypto
+
+기능 구현
+
 DB - mysql
 
 DB 구성은 추후에 업로드
