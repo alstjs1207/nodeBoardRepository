@@ -39,13 +39,17 @@ footer p {
   margin-bottom: .25rem;
 }
 
-table {
-	text-align:center; 
-	/* border:1px solid #dddddd; */
+table input {
+	text-align:center;
+}
+
+table textarea {
+	text-align:center;
 }
 
 #img_wrap {
 	width: 300px;
+	margin: auto;
 }
 
 #img_wrap img {
