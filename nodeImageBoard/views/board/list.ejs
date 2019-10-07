@@ -29,14 +29,14 @@
 			              			<img class="img-thumbnail" src="<%= repimage.vfiledir %>">
 			              			<%} }) %>
 			                <div class="card-body">
-			                <h3 class="card-title"><%= board.title %></h3>
+			                <h3 class="card-title"><%= board.title %></h3><p id="text-color-p"><%= board.viewcnt %> views</p>
 			                  <p id="cardText" class="card-text"><%= board.contents %></p>
-			                 <h6 class="card-subtitle mb-2 text-muted"><%= board.userid %></h6>
+			                 <h6 class="card-subtitle mb-2 text-muted">@<%= board.userid %></h6>
 			                  <div class="d-flex justify-content-between align-items-center">
 			                    <div class="btn-group">
 			                       <a class="btn btn-sm btn-outline-secondary" id="view" href="/board/view/<%= board.seq %>/<%= board.userid %>">view</a>
 			                    </div>
-			                    <small class="text-muted"><%= board.moddate %></small>
+			                    <small id ="text-color-p"><%= board.moddate %> days ago</small>
 			                  </div>
 			                </div>
 			              </div>
@@ -48,8 +48,8 @@
 			  <% var startPage =  pagform.startPage;
 			     var endPage = pagform.endPage;
 			     var totalPage = pagform.totalPage;
-			     var total = parseInt(totalPage/6);
-				 var chk = totalPage%6;
+			     var total = parseInt(totalPage/15);
+				 var chk = totalPage%15;
 				 
 				 if(chk > 0){
 				 	total = total + 1;
@@ -64,11 +64,11 @@
 			  </ul>
 			</nav>
           </form>
-          <%if(session.sid != null && session.sid != 'undefined' ) {%>
+         <!--  <%if(session.sid != null && session.sid != 'undefined' ) {%>
 			<div class="btn-group">
 				<a href="/board/reg" class="btn btn-sm btn-outline-secondary" id="reg">글쓰기</a>
 			</div>
-			<%}%>
+			<%}%> -->
         </div>
       </div>
 

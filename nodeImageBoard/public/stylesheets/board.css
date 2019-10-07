@@ -43,6 +43,10 @@ table input {
 	text-align:center;
 }
 
+table p {
+	text-align:center;
+}
+
 table textarea {
 	text-align:center;
 }
@@ -54,6 +58,9 @@ table textarea {
 
 #img_wrap img {
 	max-width: 100%;
+	padding-bottom: 20px;
+	margin-bottom: 20px;
+	border-bottom: 2px solid #DDD;
 }
 
 #img_wrap_old {
@@ -74,4 +81,8 @@ table textarea {
 #boardModForm {
 	margin : auto;
 	max-width: 75%;
+}
+
+#text-color-p {
+	color : #D48A6A;
 }

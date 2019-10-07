@@ -32,6 +32,7 @@ router.get('/list/:cur', function(req, res, next) {
 	var startPage = 0;
 	var endPage = 6;
 	var totalPage = 0;
+	
 	//if(req.session.sid) {
 		var countQuery = "SELECT count(*) as cnt FROM BOARD";
 		
@@ -50,7 +51,7 @@ router.get('/list/:cur', function(req, res, next) {
 				startPage = 0;
 			}
 			else {
-				startPage = (startPage - 1) * 6;
+				startPage = (startPage - 1) * 15;
 			}
 			
 			console.log("현재 페이지 : "+ startPage +", 전체 게시판 개수 :"+totalPage);
@@ -61,7 +62,7 @@ router.get('/list/:cur', function(req, res, next) {
 					"endPage" : endPage
 			};
 			
-			var listQuery = "SELECT seq, boardcd, title, contents,userid, regdate, moddate FROM BOARD ORDER BY moddate DESC limit ?,6";
+			var listQuery = "SELECT seq, boardcd, title, contents,userid, regdate, datediff(now(),moddate) as moddate, viewcnt FROM BOARD ORDER BY moddate ASC limit ?,15";
 			var reqImgQuery = "SELECT seq,	boardcd, filename, filedir,	vfiledir, regdate, moddate, repyn FROM IMAGE WHERE repyn = 'Y'";
 			
 			getConnection().query(listQuery,[startPage], function(err, boardList, fields){
@@ -70,6 +71,7 @@ router.get('/list/:cur', function(req, res, next) {
 		  			return;
 		  		}
 		  		
+		  		//console.log("date : "+moment(boardList[0].moddate).fromNow());
 		  		getConnection().query(reqImgQuery, function(err, repImageList, fields){
 			  		if(err) {
 			  			console.log("error :"+err);
@@ -104,7 +106,7 @@ router.post('/reg',upload.array('filename'), function(req, res, next) {
 	
 	
 	//게시판 고유 코드 생성
-	var boardcd = "B" + moment().format("YYYYMMDDHHmmsss");
+	var boardcd = "B" + moment().format("YYYYMMDDHHmmssS");
 	console.log("boardcd : " + boardcd);
 	
 	getConnection().query(boardQuery,[boardcd,body.title,body.contents,body.userid], function(){
@@ -151,9 +153,11 @@ router.get('/view/:seq/:id', function(req, res, next) {
 	console.log("board view:  "+req.session.sid);
 	var seq = req.params.seq;
 	var id = req.params.id;
-	var query = "SELECT seq, boardcd, title, contents, userid, regdate, moddate FROM BOARD WHERE seq = ? AND userid = ?";
+	var query = "SELECT seq, boardcd, title, contents, userid, regdate, moddate,viewcnt FROM BOARD WHERE seq = ? AND userid = ?";
 	
 	var imageQuery="SELECT seq,	boardcd, filename,	filedir, vfiledir, regdate,	moddate FROM IMAGE WHERE boardcd = ?";
+	
+	var viewCnt = "UPDATE BOARD set viewcnt = ? where boardcd = ?";
 	
 	//waterfall 비동기 방식
 	async.waterfall([
@@ -164,7 +168,6 @@ router.get('/view/:seq/:id', function(req, res, next) {
 		  			console.log("error :"+err);
 		  			return;
 		  		}
-		  		
 		  		callback(null,boardView[0]);
 			});
 		},
@@ -178,7 +181,17 @@ router.get('/view/:seq/:id', function(req, res, next) {
 	  		});
 		},
 		function(boardView,getImageViewList,callback){
-			callback(null);
+			console.log("ViewCnt");
+			var cnt = boardView.viewcnt+1;
+			console.log("Count : "+cnt);
+			getConnection().query(viewCnt,[cnt,boardView.boardcd], function(err, boardView, fields){
+		  		if(err) {
+		  			console.log("error :"+err);
+		  			return;
+		  		}
+		  		
+		  		callback(null);
+			});
 			res.render('board/view',{boardView:boardView, getImageViewList:getImageViewList,session:req.session});
 		}
 	]);

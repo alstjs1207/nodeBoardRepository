@@ -23,55 +23,29 @@
           <form action="/board/view" method="post">
           	<input type="hidden" id="seq" name ="seq" value="<%=boardView.seq%>">
           	<!-- <input type="hidden" id="boardcd" name ="boardcd" value="<%=boardView.boardcd%>"> -->
-			 <div id="boardModForm">
-		            <table class="table table-borderless">
-						<!-- <thead>
-							<tr>
-								<th colspan="2" style="text-align: center;"> 게시글 </th>
-							</tr>  
-					 	</thead> -->
-					 
-					 	<tbody>
-					    	<tr>
-					    		<!-- <th> 제목 </th> -->
-					  			<th colspan="2">
-					  				<input type="text" readonly class="form-control-plaintext form-control-lg" id="title" name="title" value="<%= boardView.title %>">
-					  			</th>
-					  		</tr>
-							<tr>
-								<!-- <th> 작성자 </th> -->
-					  			<th colspan="2">
-					  				<input type="text" readonly class="form-control-plaintext" id="userid" name="userid" value="<%= boardView.userid %>">
-					  			</th>
-					  		</tr>
-							<tr>
-								<!-- <th> 이미지</th> -->
-								<th colspan="2">
-									<div class="img_wrap" id="img_wrap">
-										<% getImageViewList.forEach(function (imageview,index){ %>
-											<img class="card-img-top" src="<%= imageview.vfiledir %>">
-										<%})%>
-									</div>
-								</th>
-					
-							</tr>
-					  		<tr>
-					  			<!-- <th> 내용 </th> -->
-					  			<th colspan="2">
-					  				<textarea readonly class="form-control-plaintext" name="contents" style="height:700px"><%=boardView.contents%></textarea>
-					  			</th>
-					  		</tr>
-					 	</tbody>
-					 </table>
-		           
-	            	<div>
-	            		<a href="/board/list/1" class="btn btn-sm btn-outline-secondary" id="list">목록</a>
-	            		<%if(session.sid == boardView.userid ) {%>
-	            			<a class="btn btn-sm btn-outline-primary" id="view" href="/board/modview/<%= boardView.seq %>/<%= boardView.userid %>">수정</a>
-	            			<a class="btn btn-sm btn-outline-primary" id="del" onclick="boardDel('<%= boardView.boardcd %>','<%= boardView.userid %>')">삭제</a>
-	            		<%}%>
-		            </div>
+			 <div class="row" id="boardModForm">
+			 	<div class="col-md-6">
+			 		<div class="img_wrap" id="img_wrap">
+						<% getImageViewList.forEach(function (imageview,index){ %>
+							<img class="card-img-top" src="<%= imageview.vfiledir %>">
+						<%})%>
+					</div>
+			 	</div>
+			 	<div class="col-md-6">
+			 		<p class="form-control-plaintext form-control-lg" id="title" name="title"><%= boardView.title %></p>
+			 		<p class="form-control-plaintext" id="userid" name="userid"><%= boardView.userid %><br><small> <%= boardView.moddate %></small></p>
+			 		<!-- <pre class="form-control-plaintext" name="contents" style="height:700px"><%=boardView.contents%></pre> -->
+			 		<div class="form-control-plaintext" name="contents" style="height:700px;white-space:pre"><%=boardView.contents%></div>
+			 	</div>
+	            	
 	        </div>
+	        <div>
+           		<a href="/board/list/1" class="btn btn-sm btn-outline-secondary" id="list">목록</a>
+           		<%if(session.sid == boardView.userid ) {%>
+           			<a class="btn btn-sm btn-outline-primary" id="view" href="/board/modview/<%= boardView.seq %>/<%= boardView.userid %>">수정</a>
+           			<a class="btn btn-sm btn-outline-primary" id="del" onclick="boardDel('<%= boardView.boardcd %>','<%= boardView.userid %>')">삭제</a>
+           		<%}%>
+            </div>
           </form>
         </div>
       </div>

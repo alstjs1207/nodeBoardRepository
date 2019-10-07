@@ -17,6 +17,11 @@
    </div> -->
    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
    	<h3 class="my-0 mr-md-auto font-weight-normal">Lott's Album Board</h3>
+   		<%if(session.sid != null && session.sid != 'undefined' ) {%>
+			<div class="btn-group">
+				<a href="/board/reg" class="btn btn-sm btn-outline-secondary" id="reg">글쓰기</a>
+			</div>
+		<%}%>
    		<nav class="my-2 my-md-0 mr-md-3">
 		    <a class="p-2 text-dark" href="#">Signed in as <%-JSON.stringify(session.sid)%></a>
 		  <!--   <a class="p-2 text-dark" href="#">Enterprise</a>

@@ -125,6 +125,7 @@ router.get('/naver',passport.authenticate('naver',null),function(req, res) {
 	console.log("/main/naver");
 });
 
+//처리 후 callback 처리 부분 성공/실패 시 리다이렉트 설정
 router.get('/naver/callback', passport.authenticate('naver', {
     successRedirect: '/',
     failureRedirect: '/main/login'
