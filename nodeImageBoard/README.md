@@ -40,7 +40,12 @@ node.js 를 이용한 이미지 게시판 만들기
 - login.js
 - board.js
 
+## 조회수 추가
 
+## AWS에 프로젝트 올리기
+- Centos7
+- mysql
+- nodejs
 
 
 # Usage
