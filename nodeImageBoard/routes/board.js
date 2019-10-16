@@ -1,3 +1,10 @@
+/* Lott's Album Board
+ * version 1.0 - mysql
+ * 
+ * 2019.10.16
+ * version 1.5 - mongoDB
+ * 
+ */
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
@@ -19,6 +26,67 @@ var upload = multer({
 var async = require('async');
 var config = require('../config/secrets');
 
+var mongoose = require('mongoose');
+//mongoose-auto-increment
+var autoIncrement = require('mongoose-auto-increment');
+
+// auto-increment를 사용하기위해 해당 정보 주석 처리
+/*mongoose.connect('mongodb://localhost:27017/board');
+var db = mongoose.connection;
+db.on('error',function(){
+	console.log('connection failed!!');
+});
+
+db.once('open',function(){
+	console.log('connect!!!');
+});*/
+
+var connection = mongoose.createConnection("mongodb://localhost:27017/board");
+
+autoIncrement.initialize(connection);
+
+//게시판 Schema
+var board = new mongoose.Schema({
+	seq : 'number',
+	boardcd : 'string',
+	title : 'string',
+	contents : 'string',
+	userid : 'string',
+	regdate : 'date',
+	moddate : 'date',
+	viewcnt : 'number'
+});
+
+//이미지 Schema
+var image = new mongoose.Schema({
+	seq : 'number',
+	boardcd : 'string',
+	filename : 'string',
+	filedir : 'string',
+	vfiledir : 'string',
+	regdate : 'date',
+	moddate : 'date',
+	repyn : 'string'
+});
+
+board.plugin(autoIncrement.plugin,{
+	model : 'boardModel',
+	field : 'seq',
+	startAt : 1,
+	increment : 1
+});
+
+image.plugin(autoIncrement.plugin,{
+	model : 'imageModel',
+	field : 'seq',
+	startAt : 1,
+	increment : 1
+});
+
+var Board = connection.model('boardModel',board);
+
+var Image = connection.model('imageModel',image);
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
 	res.redirect('/board/list/'+1);
@@ -30,10 +98,65 @@ router.get('/list/:cur', function(req, res, next) {
 	console.log("session sid :  "+req.session.sid);
 	
 	var startPage = 0;
+	var endPage = 15;
+	var totalPage = 0;
+	
+	// SELECT count(*) as count FROM BOARD
+	Board.count({},function(err, count){
+		if(err) {
+				console.log(err + "페이징 에러");
+				return;
+			}
+			
+			//전체 게시판 개수
+			totalPage = count;
+			
+			var startPage = req.params.cur;
+			
+			if(startPage == 1){
+				startPage = 0;
+			}
+			else {
+				startPage = (startPage - 1) * 15;
+			}
+			
+			console.log("현재 페이지 : "+ startPage +", 전체 게시판 개수 :"+totalPage);
+			
+			var pagform = {
+					"startPage" : startPage,
+					"totalPage" : totalPage,
+					"endPage" : endPage
+			};
+			// SELECT * FROM BOARD ORDER BY moddate DESC limit startPage,15
+			// moddate로 내림차순 정렬, startPage부터 15개의 게시판 정보 가져오기
+			Board.find({}).sort({'moddate':-1}).skip(startPage).limit(15).exec(function(err, boardList){
+		  		if(err) {
+		  			console.log("error :"+err);
+		  			return;
+		  		}
+		  		//SELECT * FROM IMAGE WHERE repyn = 'Y'
+		  		Image.find({ repyn: 'Y'}).exec(function(err, repImageList){
+			  		if(err) {
+			  			console.log("error :"+err);
+			  			return;
+			  		}
+			  		
+			  		res.render('board/list',{boardList:boardList, repImageList:repImageList, pagform:pagform,session:req.session});
+		  		});
+		  	});
+		});
+});
+
+
+/* 기존 mysql를 이용한 게시판 조회
+router.get('/list/:cur', function(req, res, next) {
+	console.log("board list!!");
+	console.log("session sid :  "+req.session.sid);
+	
+	var startPage = 0;
 	var endPage = 6;
 	var totalPage = 0;
 	
-	//if(req.session.sid) {
 		var countQuery = "SELECT count(*) as cnt FROM BOARD";
 		
 		getConnection().query(countQuery, function(err, count){
@@ -82,11 +205,7 @@ router.get('/list/:cur', function(req, res, next) {
 		  		});
 		  	});
 		});
-//	}
-//	else {
-//		res.redirect('/main/login');
-//	}
-});
+});*/
 //등록 첫 화면
 router.get('/reg', function(req, res, next) {
 	console.log("board reg!!");
@@ -104,12 +223,27 @@ router.post('/reg',upload.array('filename'), function(req, res, next) {
 	var boardQuery = "INSERT INTO BOARD (boardcd, title, contents, userid, regdate, moddate) VALUE (?,?,?,?,SYSDATE(),SYSDATE())";
 	var imageQuery = "INSERT INTO IMAGE (boardcd, filename, filedir,vfiledir, regdate, moddate, repyn) VALUE (?,?,?,?,SYSDATE(),SYSDATE(),?)";
 	
-	
 	//게시판 고유 코드 생성
 	var boardcd = "B" + moment().format("YYYYMMDDHHmmssS");
 	console.log("boardcd : " + boardcd);
 	
-	getConnection().query(boardQuery,[boardcd,body.title,body.contents,body.userid], function(){
+	//인스턴스 생성
+	var newBoard = new Board({
+		"boardcd": boardcd,
+		"title": body.title,
+		"contents": body.contents,
+		"userid": body.userid,
+		"regdate": moment().format("YYYY-MM-DD HH:mm:ss"),
+		"moddate": moment().format("YYYY-MM-DD HH:mm:ss"),
+		"viewcnt":"1"
+		});
+	
+//	기존 mysql query 주석처리	
+//	getConnection().query(boardQuery,[boardcd,body.title,body.contents,body.userid], function(){
+	newBoard.save(function(err){
+		if(err){
+			console.log(err);
+		}
 
 		var files = req.files;
 		var filename = "";
@@ -135,8 +269,20 @@ router.post('/reg',upload.array('filename'), function(req, res, next) {
 			} else {
 				fileimage_rep_Yn = "N";
 			}
-		
-			getConnection().query(imageQuery,[boardcd,filename,vfiledir,vfiledir,fileimage_rep_Yn], function(err, rows, fields){
+			
+			//인스턴스 생성
+			var newImage = new Image({
+				"boardcd": boardcd,
+				"filename": filename,
+				"filedir": vfiledir,
+				"vfiledir": vfiledir,
+				"regdate": moment().format("YYYY-MM-DD HH:mm:ss"),
+				"moddate": moment().format("YYYY-MM-DD HH:mm:ss"),
+				"repyn": fileimage_rep_Yn
+				});
+//			기존 mysql query 주석처리		
+//			getConnection().query(imageQuery,[boardcd,filename,vfiledir,vfiledir,fileimage_rep_Yn], function(err, rows, fields){
+			newImage.save(function(err){
 			
 				if(err) {
 					console.log(err);
@@ -154,16 +300,17 @@ router.get('/view/:seq/:id', function(req, res, next) {
 	var seq = req.params.seq;
 	var id = req.params.id;
 	var query = "SELECT seq, boardcd, title, contents, userid, regdate, moddate,viewcnt FROM BOARD WHERE seq = ? AND userid = ?";
-	
 	var imageQuery="SELECT seq,	boardcd, filename,	filedir, vfiledir, regdate,	moddate FROM IMAGE WHERE boardcd = ?";
-	
 	var viewCnt = "UPDATE BOARD set viewcnt = ? where boardcd = ?";
 	
 	//waterfall 비동기 방식
 	async.waterfall([
 		function(callback){
 			console.log("seq : "+seq +",id :"+id);
-			getConnection().query(query,[seq,id], function(err, boardView, fields){
+			//SELECT * FROM BOARD WHERE seq = ? AND userid = ?
+			Board.find({seq: seq, userid: id}).exec(function(err, boardView){
+//			기존 mysql query 주석처리
+//			getConnection().query(query,[seq,id], function(err, boardView, fields){
 		  		if(err) {
 		  			console.log("error :"+err);
 		  			return;
@@ -172,7 +319,10 @@ router.get('/view/:seq/:id', function(req, res, next) {
 			});
 		},
 		function(boardView,callback){
-			getConnection().query(imageQuery,[boardView.boardcd], function(err, getImageViewList, fields){
+			//SELECT * FROM IMAGE WHERE boardcd = ?
+			Image.find({boardcd: boardView.boardcd}).exec(function(err, getImageViewList){
+//			기존 mysql query 주석처리
+//			getConnection().query(imageQuery,[boardView.boardcd], function(err, getImageViewList, fields){
 	  			if(err) {
 	  	  			console.log("error :"+err);
 	  	  			return;
@@ -184,7 +334,10 @@ router.get('/view/:seq/:id', function(req, res, next) {
 			console.log("ViewCnt");
 			var cnt = boardView.viewcnt+1;
 			console.log("Count : "+cnt);
-			getConnection().query(viewCnt,[cnt,boardView.boardcd], function(err, boardView, fields){
+			//UPDATE BOARD set viewcnt = ? where boardcd = ?
+			Board.updateOne({ boardcd: boardView.boardcd }, { $set: { viewcnt: cnt } }, function (err, result) {
+//			기존 mysql query 주석처리
+//			getConnection().query(viewCnt,[cnt,boardView.boardcd], function(err, boardView, fields){
 		  		if(err) {
 		  			console.log("error :"+err);
 		  			return;
