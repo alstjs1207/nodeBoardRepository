@@ -158,16 +158,43 @@ function(accessToken, refreshToken, profile, done) {
 
 //failed to serialize user into session 에러 발생 시 아래의 내용을 추가 한다.
 passport.serializeUser(function(user, done) {
+	console.log("serializeUser");
     done(null, user);
 });
 
 passport.deserializeUser(function(req, user, done) {
-	
+	console.log("deserializeUser");
 	// passport로 로그인 처리 후 해당 정보를 session에 담는다.
 	req.session.sid = user.name;
 	console.log("Session Check :" +req.session.sid);
     done(null, user);
 });
+
+
+
+
+router.get('/openid',function(req, res) {
+	console.log("/main/openid");
+	
+	res.redirect('/main/login');
+});
+
+router.get('/callback',function(req, res) {
+	console.log("/main/callback");
+     var id_token = OIDC.getValidIdToken();
+     var access_token = OIDC.getAccessToken();
+     var tokenClaims = JSON.parse(OIDC.getIdTokenParts(id_token)[1]);
+     var userInfoClaims = JSON.parse(OIDC.getUserInfo(access_token));
+     var tokenClaimsHTMLString = JSONObjToHTMLTable(tokenClaims);
+     var userInfoClaimsHTMLString = JSONObjToHTMLTable(userInfoClaims);
+	
+	
+	res.redirect('/');
+});
+
+
+
+
 
 
 var pool = mysql.createPool({
