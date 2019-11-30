@@ -18,6 +18,22 @@
 <script src="/js/bootstrap.js"></script>
 <script src="/js/jquery.dataTables.js"></script>
 <script src="/js/jquery-ui.js"></script>
+<script src="/js/openidconnect.js"></script>
+ <script>
+            var clientInfo = {
+                client_id : '--',
+                redirect_uri : 'http://localhost:3000/main/callback'
+            };
+            var providerInfo = OIDC.discover('https://check.gluu.org');
+            OIDC.setClientInfo( clientInfo );
+            OIDC.setProviderInfo( providerInfo );
+            OIDC.storeInfo(providerInfo, clientInfo);
+            // Remove State and Nonce from previous session
+            sessionStorage.removeItem('state');
+            sessionStorage.removeItem('nonce');
+            loginRequest = OIDC.generateLoginRequest({scope : 'openid profile email',
+            response_type : 'token id_token'});
+        </script>
 <!-- <script type="text/javascript" src="/js/user/user.js?V=6"></script> -->
 <title>로그인</title>
 </head>
@@ -54,6 +70,9 @@
             	<input class="btn btn-lg btn-warning btn-block" id="login" type="submit" value="login">
             	<a href="/main/naver" class="btn btn-lg btn-success btn-block" id="join">네이버 로그인</a>
           	</div>
+          	<div id="loginButton">
+          		<button onClick="OIDC.login( {scope : 'openid profile email',response_type : 'token id_token'} );" type="button" class="btn btn-success" >Gluu 로그인</button>
+        	</div>
           </div>
           <a href="/main/join" class="btn btn-lg btn-link btn-block" id="join">회원가입</a>
         </div>

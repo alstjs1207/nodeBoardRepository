@@ -10,11 +10,13 @@ var multer = require('multer');
 var moment = require('moment');
 var async = require('async');
 var passport = require('passport');
+var fs = require('fs');
 
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var usersRouter = require('./routes/users');
 var boardRouter = require('./routes/board');
+var https = require('https');
 
 var app = express();
 
@@ -60,5 +62,14 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+/*var options = {
+		key: fs.readFileSync('./config/server.key'),
+		cert: fs.readFileSync('./config/server.cert')
+	};
+
+https.createServer(options, app).listen(3100, function() {
+	  console.log("HTTPS server listening on port " + 3100);
+	});*/
 
 module.exports = app;
