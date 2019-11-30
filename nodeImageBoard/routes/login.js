@@ -8,6 +8,17 @@ var crypto = require('crypto');
 var config = require('../config/secrets'); //config 파일 설정
 var passport = require('passport'); //passport 추가
 var NaverStrategy = require('passport-naver').Strategy;
+var mongoose = require('mongoose');
+var connection = mongoose.createConnection("mongodb://localhost:27017/board");
+
+//사용자 Schema
+var user = new mongoose.Schema({
+	userid : 'string',
+	password : 'string',
+	nickname : 'string'
+});
+
+var User = connection.model('userModel',user);
 
 /* POST listing. */
 router.post('/login', function(req, res, next) {
@@ -30,7 +41,8 @@ router.post('/login', function(req, res, next) {
 	//사용자 조회
 	var userQuery="SELECT userid, password, nickname FROM USER WHERE userid = ?";
 	
-	getConnection().query(userQuery,[id], function(err, user){
+	//getConnection().query(userQuery,[id], function(err, user){
+	User.find({userid: id}).exec(function(err, user){
 		if(err) {
 			console.log(err + "쿼리 에러");
 			return;
@@ -104,9 +116,17 @@ router.post('/reg', function(req, res, next) {
 	var enPwd = crypto.createHash('sha256').update(pwd).digest('hex');
 	pwd = enPwd.toUpperCase();
 	
+	//인스턴스 생성
+	var newUser = new User({
+		"userid": id,
+		"password": pwd,
+		"nickname": nickNm
+		});
+	
 	var regQuery = "INSERT INTO USER (userid, password,	nickname, regdate, moddate) VALUES (?,?,?, SYSDATE(), SYSDATE())";
 	
-	getConnection().query(regQuery,[id,pwd,nickNm], function(err, user){
+//	getConnection().query(regQuery,[id,pwd,nickNm], function(err, user){
+	newUser.save(function(err){
 		if(err) {
 			console.log(err + "쿼리 에러");
 			return;

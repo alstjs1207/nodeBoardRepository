@@ -42,7 +42,7 @@
 	        <div>
            		<a href="/board/list/1" class="btn btn-sm btn-outline-secondary" id="list">목록</a>
            		<%if(session.sid == boardView.userid ) {%>
-           			<a class="btn btn-sm btn-outline-primary" id="view" href="/board/modview/<%= boardView.seq %>/<%= boardView.userid %>">수정</a>
+           			<a class="btn btn-sm btn-outline-primary" id="view" href="/board/modview/<%= boardView._id %>">수정</a>
            			<a class="btn btn-sm btn-outline-primary" id="del" onclick="boardDel('<%= boardView.boardcd %>','<%= boardView.userid %>')">삭제</a>
            		<%}%>
             </div>

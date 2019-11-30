@@ -34,7 +34,8 @@
 			                 <h6 class="card-subtitle mb-2 text-muted">@<%= board.userid %></h6>
 			                  <div class="d-flex justify-content-between align-items-center">
 			                    <div class="btn-group">
-			                       <a class="btn btn-sm btn-outline-secondary" id="view" href="/board/view/<%= board.seq %>/<%= board.userid %>">view</a>
+			                       <!-- <a class="btn btn-sm btn-outline-secondary" id="view" href="/board/view/<%= board.seq %>/<%= board.userid %>">view</a> -->
+			                       <a class="btn btn-sm btn-outline-secondary" id="view" href="/board/view/<%= board._id %>">view</a>
 			                    </div>
 			                    <small id ="text-color-p"><%= board.moddate %> days ago</small>
 			                  </div>

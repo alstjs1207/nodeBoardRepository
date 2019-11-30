@@ -41,7 +41,7 @@ db.once('open',function(){
 	console.log('connect!!!');
 });*/
 
-var connection = mongoose.createConnection("mongodb://localhost:27017/board");
+var connection = mongoose.createConnection(config.mongodb.local.board);
 
 autoIncrement.initialize(connection);
 
@@ -294,11 +294,12 @@ router.post('/reg',upload.array('filename'), function(req, res, next) {
 	
 });
 
-router.get('/view/:seq/:id', function(req, res, next) {
+//router.get('/view/:seq/:id', function(req, res, next) {
+router.get('/view/:seq', function(req, res, next) {
 	console.log("board view!!");
 	console.log("board view:  "+req.session.sid);
 	var seq = req.params.seq;
-	var id = req.params.id;
+	//var id = req.params.id;
 	var query = "SELECT seq, boardcd, title, contents, userid, regdate, moddate,viewcnt FROM BOARD WHERE seq = ? AND userid = ?";
 	var imageQuery="SELECT seq,	boardcd, filename,	filedir, vfiledir, regdate,	moddate FROM IMAGE WHERE boardcd = ?";
 	var viewCnt = "UPDATE BOARD set viewcnt = ? where boardcd = ?";
@@ -306,9 +307,9 @@ router.get('/view/:seq/:id', function(req, res, next) {
 	//waterfall 비동기 방식
 	async.waterfall([
 		function(callback){
-			console.log("seq : "+seq +",id :"+id);
+			console.log("seq : "+seq);
 			//SELECT * FROM BOARD WHERE seq = ? AND userid = ?
-			Board.find({seq: seq, userid: id}).exec(function(err, boardView){
+			Board.find({_id: seq}).exec(function(err, boardView){
 //			기존 mysql query 주석처리
 //			getConnection().query(query,[seq,id], function(err, boardView, fields){
 		  		if(err) {
@@ -353,12 +354,12 @@ router.get('/view/:seq/:id', function(req, res, next) {
 
 
 //수정 화면
-router.get('/modview/:seq/:id', function(req, res, next) {
+router.get('/modview/:seq', function(req, res, next) {
 	console.log("board modview!!");
 	console.log("board modview:  "+req.session.sid);
 	
 	var seq = req.params.seq;
-	var id = req.params.id;
+//	var id = req.params.id;
 	
 	if(req.session.sid) {
 		
@@ -366,7 +367,8 @@ router.get('/modview/:seq/:id', function(req, res, next) {
 		
 		var imageQuery="SELECT seq,	boardcd, filename,	filedir, vfiledir, regdate,	moddate FROM IMAGE WHERE boardcd = ?";
 		
-		getConnection().query(query,[seq,id], function(err, boardView, fields){
+//		getConnection().query(query,[seq,id], function(err, boardView, fields){
+		Board.find({_id: seq}).exec(function(err, boardView){
 	  		if(err) {
 	  			console.log("error :"+err);
 	  			return;
@@ -374,7 +376,8 @@ router.get('/modview/:seq/:id', function(req, res, next) {
 	  		
 	  		var boardcd = boardView[0].boardcd;
 	  		
-	  		getConnection().query(imageQuery,[boardcd], function(err, getImageViewList, fields){
+//	  		getConnection().query(imageQuery,[boardcd], function(err, getImageViewList, fields){
+	  		Image.find({boardcd: boardcd}).exec(function(err, getImageViewList){
 	  			if(err) {
 	  	  			console.log("error :"+err);
 	  	  			return;
@@ -412,7 +415,8 @@ router.post('/modview',upload.array('filenameModify'), function(req, res, next) 
 		var imageAddQuery = "INSERT INTO IMAGE (boardcd, filename, filedir,vfiledir, regdate, moddate, repyn) VALUE (?,?,?,?,SYSDATE(),SYSDATE(),?)";
 		
 		//이미지 업데이트
-		getConnection().query(query,[body.contents,boardcd,body.seq], function(err, boardView, fields){
+//		getConnection().query(query,[body.contents,boardcd,body.seq], function(err, boardView, fields){
+		Board.updateOne({ seq: body.seq }, { $set: { contents: body.contents, boardcd: boardcd, moddate: moment().format("YYYY-MM-DD HH:mm:ss") } }, function (err, result) {
 	  		if(err) {
 	  			console.log("error :"+err);
 	  			return;
@@ -422,7 +426,8 @@ router.post('/modview',upload.array('filenameModify'), function(req, res, next) 
 	  		var repImage = body.fileimage_rep; //선택된 대표 이미지
 	  		var filename = "";
 	  		//기존 저장된 이미지 리스트
-	  		getConnection().query(imageQuery,[body.boardcd], function(err, getImageViewList, fields){
+//	  		getConnection().query(imageQuery,[body.boardcd], function(err, getImageViewList, fields){
+	  		Image.find({boardcd: body.boardcd}).exec(function(err, getImageViewList){
 	  			if(err) {
 	  	  			console.log("error :"+err);
 	  	  			return;
@@ -443,8 +448,10 @@ router.post('/modview',upload.array('filenameModify'), function(req, res, next) 
 	  				} else {
 	  					fileimage_rep_Yn = "N";
 	  				}
+	  				
 	  				// 대표이미지 변경 업데이트
-	  				getConnection().query(imageUpdateQuery,[boardcd,fileimage_rep_Yn,imageSeq], function(err, getImageViewList, fields){
+//	  				getConnection().query(imageUpdateQuery,[boardcd,fileimage_rep_Yn,imageSeq], function(err, getImageViewList, fields){
+	  				Image.updateOne({ seq: imageSeq }, { $set: { boardcd: boardcd, repyn: fileimage_rep_Yn } }, function (err, getImageViewList) {	
 	  		  			if(err) {
 	  		  	  			console.log("error :"+err);
 	  		  	  			return;
@@ -477,8 +484,20 @@ router.post('/modview',upload.array('filenameModify'), function(req, res, next) 
 	  				} else {
 	  					fileimage_rep_Yn = "N";
 	  				}
+	  				
+	  				//인스턴스 생성
+	  				var newImage = new Image({
+	  					"boardcd": boardcd,
+	  					"filename": filename,
+	  					"filedir": vfiledir,
+	  					"vfiledir": vfiledir,
+	  					"regdate": moment().format("YYYY-MM-DD HH:mm:ss"),
+	  					"moddate": moment().format("YYYY-MM-DD HH:mm:ss"),
+	  					"repyn": fileimage_rep_Yn
+	  					});
 	  			
-	  				getConnection().query(imageAddQuery,[boardcd,filename,vfiledir,vfiledir,fileimage_rep_Yn], function(err, rows, fields){
+//	  				getConnection().query(imageAddQuery,[boardcd,filename,vfiledir,vfiledir,fileimage_rep_Yn], function(err, rows, fields){
+	  				newImage.save(function(err){
 	  				
 	  					if(err) {
 	  						console.log(err);
