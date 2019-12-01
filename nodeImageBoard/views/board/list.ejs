@@ -26,7 +26,9 @@
 			              <div class="card mb-4 box-shadow">
 			              <% repImageList.forEach(function (repimage,index){ 
 			              		if(board.boardcd == repimage.boardcd) {%>
-			              			<img class="img-thumbnail" src="<%= repimage.vfiledir %>">
+			              			<a id="imgLink" href="/board/view/<%= board._id %>">
+			              				<img class="img-thumbnail" src="<%= repimage.vfiledir %>">
+			              			</a>
 			              			<%} }) %>
 			                <div class="card-body">
 			                <h3 class="card-title"><%= board.title %></h3><p id="text-color-p"><%= board.viewcnt %> views</p>
@@ -37,7 +39,7 @@
 			                       <!-- <a class="btn btn-sm btn-outline-secondary" id="view" href="/board/view/<%= board.seq %>/<%= board.userid %>">view</a> -->
 			                       <a class="btn btn-sm btn-outline-secondary" id="view" href="/board/view/<%= board._id %>">view</a>
 			                    </div>
-			                    <small id ="text-color-p"><%= board.moddate %> days ago</small>
+			                    <small id ="text-color-p"><%= board.year %> / <%= board.month %> / <%= board.day %></small>
 			                  </div>
 			                </div>
 			              </div>

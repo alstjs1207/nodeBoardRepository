@@ -52,7 +52,7 @@ table textarea {
 }
 
 #img_wrap {
-	width: 300px;
+	/* width: 300px; */
 	margin: auto;
 }
 
@@ -86,3 +86,29 @@ table textarea {
 #text-color-p {
 	color : #D48A6A;
 }
+
+#imgLink {
+	overflow: hidden;
+}
+
+#imgLink img {
+    -webkit-transform:scale(1);
+    -moz-transform:scale(1);
+    -ms-transform:scale(1); 
+    -o-transform:scale(1);  
+    transform:scale(1);
+    -webkit-transition:.3s;
+    -moz-transition:.3s;
+    -ms-transition:.3s;
+    -o-transition:.3s;
+    transition:.3s;
+}
+
+#imgLink:hover img {
+    -webkit-transform:scale(1.2);
+    -moz-transform:scale(1.2);
+    -ms-transform:scale(1.2);   
+    -o-transform:scale(1.2);
+    transform:scale(1.2);
+}
+
