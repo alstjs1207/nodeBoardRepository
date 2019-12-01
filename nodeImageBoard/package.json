@@ -13,6 +13,7 @@
     "ejs": "^2.6.2",
     "express": "^4.16.4",
     "express-session": "^1.16.2",
+    "forever": "^1.0.0",
     "http-errors": "~1.6.3",
     "moment": "^2.24.0",
     "mongodb": "^3.3.2",
