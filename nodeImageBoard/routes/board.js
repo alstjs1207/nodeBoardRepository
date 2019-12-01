@@ -129,7 +129,7 @@ router.get('/list/:cur', function(req, res, next) {
 			};
 			// SELECT * FROM BOARD ORDER BY moddate DESC limit startPage,15
 			// moddate로 내림차순 정렬, startPage부터 15개의 게시판 정보 가져오기
-			Board.aggregate([{$project: {seq:1,boardcd:1,title:1,contents:1,userid:1,viewcnt:1,year:{$year: "$moddate"},month:{$month:"$moddate"},day:{$dayOfMonth:"$moddate"}}},{$sort:{moddate:-1}},{$skip:0},{$limit:15}]).exec(function(err, boardList){
+			Board.aggregate([{$project: {seq:1,boardcd:1,title:1,contents:1,userid:1,viewcnt:1,moddate:1,year:{$year: "$moddate"},month:{$month:"$moddate"},day:{$dayOfMonth:"$moddate"}}},{$sort:{moddate:-1}},{$skip:startPage},{$limit:15}]).exec(function(err, boardList){
 //			Board.find({}).sort({'moddate':-1}).skip(startPage).limit(15).exec(function(err, boardList){
 		  		if(err) {
 		  			console.log("error :"+err);
