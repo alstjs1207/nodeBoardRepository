@@ -394,10 +394,10 @@ router.post('/del', function(req, res, next) {
 
 var pool = mysql.createPool({
 	connectionLimit: 10,
-	host:config.mysql_db.local.host,
-	user: config.mysql_db.local.user,
-	password: config.mysql_db.local.password,
-	database: config.mysql_db.local.database,
+	host:config.mysql_db.aws.host,
+	user: config.mysql_db.aws.user,
+	password: config.mysql_db.aws.password,
+	database: config.mysql_db.aws.database,
   	dateStrings: 'date' //db의 datetime을 정리된 데이터로 추출
 });
 
