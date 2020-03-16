@@ -8,53 +8,42 @@ var crypto = require('crypto');
 var config = require('../config/secrets'); //config 파일 설정
 var passport = require('passport'); //passport 추가
 var NaverStrategy = require('passport-naver').Strategy;
-var mongoose = require('mongoose');
-var connection = mongoose.createConnection("mongodb://localhost:27017/board");
 
-//사용자 Schema
-var user = new mongoose.Schema({
-	userid : 'string',
-	password : 'string',
-	nickname : 'string'
-});
-
-var User = connection.model('userModel',user);
+const User = require('../models/users');
 
 /* POST listing. */
 router.post('/login', function(req, res, next) {
 	console.log("login");
-	
+
 	var id = req.body.userid;
 	var pwd = req.body.password;
-	
+
 	console.log(id+","+pwd);
-	
 	console.log("se login  :"+ req.session.sid);
-	
+
 	//패스워드 sha256
 	var enPwd = crypto.createHash('sha256').update(pwd).digest('hex');
-	
 	enPwd = enPwd.toUpperCase();
-	
+
 	console.log(enPwd);
-	
+
 	//사용자 조회
-	var userQuery="SELECT userid, password, nickname FROM USER WHERE userid = ?";
-	
+	//var userQuery="SELECT userid, password, nickname FROM USER WHERE userid = ?";
+
 	//getConnection().query(userQuery,[id], function(err, user){
 	User.find({userid: id}).exec(function(err, user){
 		if(err) {
 			console.log(err + "쿼리 에러");
 			return;
 		}
-		
+
 		if(user.length !== 0){
 			var userPwd = user[0].password;
 			console.log("userPwd : "+userPwd);
-			
+
 			if(userPwd === enPwd){ //===은 데이터 타입까지 일치 확인
 				console.log("사용자 정보 일치");
-				
+
 				//session 설정 현재는 sid에 id정보를 넣고있음
 				req.session.sid = id;
 				req.session.createTime = new Date();
@@ -66,14 +55,14 @@ router.post('/login', function(req, res, next) {
 				res.redirect('/main/login');
 				return;
 			}
-			
+
 		}
 		else {
 			console.log("사용자 정보 없음");
 			//return res.send('<script type="text/javascript"> alert("계정이나 비밀번호가 다릅니다.");</script>');
 			res.redirect('/main/login');
 		}
-		
+
 	});
 });
 
@@ -84,15 +73,15 @@ router.get('/logout', function(req, res, next) {
 	req.logout();
 //	res.redirect('/main/login');
 	res.redirect('/board/list/1');
-	
+
 });
 
 router.get('/login', function(req, res, next) {
-	
+
 	console.log("login start page : "+req.session.sid);
-	
+
 	if(req.session.sid){
-		
+
 		res.redirect('/board/list/'+1);
 	}else {
 		res.render('main/login',{
@@ -108,38 +97,38 @@ router.get('/join', function(req, res, next) {
 
 router.post('/reg', function(req, res, next) {
 	console.log("join reg");
-	
+
 	var id = req.body.userid;
 	var pwd = req.body.password;
 	var nickNm = req.body.nickname;
-	
+
 	var enPwd = crypto.createHash('sha256').update(pwd).digest('hex');
 	pwd = enPwd.toUpperCase();
-	
+
 	//인스턴스 생성
 	var newUser = new User({
 		"userid": id,
 		"password": pwd,
 		"nickname": nickNm
 		});
-	
-	var regQuery = "INSERT INTO USER (userid, password,	nickname, regdate, moddate) VALUES (?,?,?, SYSDATE(), SYSDATE())";
-	
+
+//	var regQuery = "INSERT INTO USER (userid, password,	nickname, regdate, moddate) VALUES (?,?,?, SYSDATE(), SYSDATE())";
+
 //	getConnection().query(regQuery,[id,pwd,nickNm], function(err, user){
 	newUser.save(function(err){
 		if(err) {
 			console.log(err + "쿼리 에러");
 			return;
 		}
-		
+
 		console.log("등록 성공");
-		
+
 		res.redirect('/main/login');
 	});
 });
 
 /* naver 로그인 연동
- * 
+ *
  */
 router.get('/naver',passport.authenticate('naver',null),function(req, res) {
 	console.log("/main/naver");
@@ -156,7 +145,7 @@ passport.use(new NaverStrategy({
     clientID: config.authLogin.naver.client_id,
     clientSecret: config.authLogin.naver.secret_id,
     callbackURL: config.authLogin.naver.callback_url
-}, 
+},
 function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
 
@@ -169,7 +158,7 @@ function(accessToken, refreshToken, profile, done) {
         };
         console.log("user=");
         console.log(user);
-    	
+
         return done(null, user);
     	});
 	}
@@ -190,47 +179,17 @@ passport.deserializeUser(function(req, user, done) {
     done(null, user);
 });
 
+// var pool = mysql.createPool({
+// 	connectionLimit: 10,
+// 	host:config.mysql_db.local.host,
+// 	user: config.mysql_db.local.user,
+// 	password: config.mysql_db.local.password,
+// 	database: config.mysql_db.local.database,
+//   	dateStrings: 'date' //db의 datetime을 정리된 데이터로 추출
+// });
 
-
-
-router.get('/openid',function(req, res) {
-	console.log("/main/openid");
-	
-	res.redirect('/main/login');
-});
-
-router.get('/callback',function(req, res) {
-	console.log("/main/callback");
-     var id_token = OIDC.getValidIdToken();
-     var access_token = OIDC.getAccessToken();
-     var tokenClaims = JSON.parse(OIDC.getIdTokenParts(id_token)[1]);
-     var userInfoClaims = JSON.parse(OIDC.getUserInfo(access_token));
-     var tokenClaimsHTMLString = JSONObjToHTMLTable(tokenClaims);
-     var userInfoClaimsHTMLString = JSONObjToHTMLTable(userInfoClaims);
-	
-	
-	res.redirect('/');
-});
-
-
-
-
-
-
-var pool = mysql.createPool({
-	connectionLimit: 10,
-	host:config.mysql_db.local.host,
-	user: config.mysql_db.local.user,
-	password: config.mysql_db.local.password,
-	database: config.mysql_db.local.database,
-  	dateStrings: 'date' //db의 datetime을 정리된 데이터로 추출
-});
-
-function getConnection(){
-	return pool;
-}
+// function getConnection(){
+// 	return pool;
+// }
 
 module.exports = router;
-
-
-

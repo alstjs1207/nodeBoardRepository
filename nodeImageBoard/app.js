@@ -11,6 +11,10 @@ var moment = require('moment');
 var async = require('async');
 var passport = require('passport');
 var fs = require('fs');
+//cors 설정
+var cors = require('cors'); 
+var config = require('./config/secrets');
+
 
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
@@ -19,6 +23,9 @@ var boardRouter = require('./routes/board');
 var https = require('https');
 
 var app = express();
+
+//cors 설정
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -63,13 +70,13 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-/*var options = {
-		key: fs.readFileSync('./config/server.key'),
-		cert: fs.readFileSync('./config/server.cert')
-	};
+// var options = {
+// 		key: fs.readFileSync('./config/server.key'),
+// 		cert: fs.readFileSync('./config/server.cert')
+// 	};
 
-https.createServer(options, app).listen(3100, function() {
-	  console.log("HTTPS server listening on port " + 3100);
-	});*/
+// https.createServer(options, app).listen(3100, function() {
+// 	  console.log("HTTPS server listening on port " + 3100);
+// 	});
 
 module.exports = app;

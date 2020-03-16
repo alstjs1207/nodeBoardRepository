@@ -24,7 +24,7 @@
           		<% boardList.forEach(function (board,index){ %>
           		 		 <div class="col-md-4">
 			              <div class="card mb-4 box-shadow">
-			              <% repImageList.forEach(function (repimage,index){ 
+			              <% repImageList.forEach(function (repimage,index){
 			              		if(board.boardcd == repimage.boardcd) {%>
 			              			<a id="imgLink" href="/board/view/<%= board._id %>">
 			              				<img class="img-thumbnail" src="<%= repimage.vfiledir %>">
@@ -53,13 +53,13 @@
 			     var totalPage = pagform.totalPage;
 			     var total = parseInt(totalPage/15);
 				 var chk = totalPage%15;
-				 
+
 				 if(chk > 0){
 				 	total = total + 1;
 				 	}
 			  %>
 					<li class="page-item"><a class="page-link" href="/board/list/1" >Previous</a></li>
-					
+
 					<% for(var i=1; i <= total;i++) { %>
 						<li class="page-item"><a class="page-link" href="/board/list/<%=i %>"><%=i %></a><li>
 					<% } %>
